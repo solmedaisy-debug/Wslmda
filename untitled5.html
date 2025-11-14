@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Nov 13 08:57:27 2025
+
+@author: joela
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Data penduduk aktual
+tahun = np.array([2020, 2021, 2022, 2023, 2024])
+jumlah_penduduk = np.array([81570, 83020, 84420, 85810, 87200])
+
+# Parameter model
+tahun_awal = tahun[0]
+populasi_awal = jumlah_penduduk[0]
+K = 100000  # Carrying capacity
+
+# Hitung laju pertumbuhan (r) menggunakan data 2020-2021
+r = (jumlah_penduduk[1] - jumlah_penduduk[0]) / jumlah_penduduk[0]
+
+# Model Malthus
+def malthus(t, P0, r):
+    return P0 * np.exp(r * (t - tahun_awal))
+
+# Model Logistik
+def logistik(t, P0, r, K):
+    return K / (1 + (K / P0 - 1) * np.exp(-r * (t - tahun_awal)))
+
+# Prediksi menggunakan model
+tahun_prediksi = np.arange(2021, 2025)
+prediksi_malthus = malthus(tahun_prediksi, populasi_awal, r)
+prediksi_logistik = logistik(tahun_prediksi, populasi_awal, r, K)
+
+# Visualisasi hasil
+plt.figure(figsize=(10, 6))
+plt.plot(tahun, jumlah_penduduk, 'o-', label='Data Aktual')
+plt.plot(tahun_prediksi, prediksi_malthus, 's-', label='Prediksi Malthus')
+plt.plot(tahun_prediksi, prediksi_logistik, '^-', label='Prediksi Logistik')
+
+plt.xlabel('Tahun')
+plt.ylabel('Jumlah Penduduk')
+plt.title('Perbandingan Model Pertumbuhan Populasi')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Tampilkan perbandingan dalam bentuk tabel
+print("Tahun\tAktual\tMalthus\tLogistik")
+for i in range(len(tahun_prediksi)):
+    print(f"{tahun_prediksi[i]}\t{jumlah_penduduk[i+1]}\t{int(prediksi_malthus[i])}\t{int(prediksi_logistik[i])}")
